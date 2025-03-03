@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>That Other Climbing Comp</title>
+</head>
+<body>
+    <ul id="navigation">
+    {% for item in navigation %}
+        <li><a href="{{ link.href }}">{{ link.caption }}</a></li>
+    {% endfor %}
+    </ul>
+
+    <h1>That Other Climbing Comp</h1>
+    Welcome: {{ username }}
+
+</body>
+</html>
