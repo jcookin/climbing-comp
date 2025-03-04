@@ -64,7 +64,8 @@ def check_route_exists(route_name: str) -> Tuple[int, str]:
     if routes:
         routelist = list(routes)
         if route_name in routelist:
-            return routelist[route_name][1], None
+            print(f"found route: {routelist}")
+            return routelist, None
     return None, None
 
 def add_route(route_name: str, route_grade: int, creating_user: str) -> Tuple[int, str]:
@@ -74,9 +75,37 @@ def add_route(route_name: str, route_grade: int, creating_user: str) -> Tuple[in
     id = database.insert_route(name=route_name, grade=route_grade, user=creating_user)
     if not id:
         return None, 'Error creating route'
+    err = add_route_to_all_users(route_id=id)
+    if err:
+        return id, err
     return id, None
 
-def get_route_by_id(route_id: int) -> Tuple[int, str]:
-    id, error = database.get_route_by_id(route_id)
-    return id, error
+def add_route_to_all_users(route_id: int) -> str:
+    users = database.get_all_user_ids()
+    # if no users, exit cleanly anyway
+    if not users:
+        return None
+    err = database.bulk_add_users_to_routes(route_id, users)
+    if err:
+        print(f"Error adding some users to the new route {route_id}")
+        return 'Error adding all users to new route'
+    return None
 
+def get_route_by_id(route_id: int) -> Tuple[dict, str]:
+    route_info = database.get_route_by_id(route_id)
+    column_names = database.get_column_names_from("routes")
+    if not route_info:
+        return None, f'No route found with id {route_id}'
+    
+    route_dict = dict(zip(column_names, route_info))
+    print(f"route_dict: {route_dict}")
+    print(type(route_dict))
+    return route_dict, None
+
+def get_user_info_for_route_id(username: str, route_id: int) -> Tuple[dict, str]:
+    user_id = database.get_user_id_from_name(username=username)
+    user_info = database.get_user_route_stats(user_id=user_id, route_id=route_id)
+    user_route_dict = {"attempts": user_info[0], "sent": bool(user_info[1]), "send_date": user_info[2]}
+    print("~~~user route dict:")
+    print(user_route_dict)
+    return user_route_dict, None

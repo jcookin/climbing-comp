@@ -31,6 +31,13 @@ def get_user_by_name(username: str) -> tuple:
     print(users)
     return users
 
+def get_user_id_from_name(username: str) -> int:
+    resp = cur.execute(f"SELECT climber_id FROM climbers WHERE username='{username}'")
+    users = resp.fetchone()
+    if not users:
+        return None
+    return users[0]
+
 def get_user_password(username: str) -> bytes:
     print(f'Getting password for user: {username}')
     resp = cur.execute(f"SELECT password_hash FROM climbers WHERE username='{username}'")
@@ -51,6 +58,12 @@ def insert_user(username: str, hashed_password: bytes, team_id: int = -1, is_adm
     created_user_id = cur.lastrowid
     print(f"Created user {username}, got id {created_user_id}")
     return created_user_id
+
+def get_all_user_ids() -> tuple:
+    resp = cur.execute(f"SELECT climber_id FROM climbers;")
+    ids = resp.fetchall()
+    print(f"Found all ids: {ids}")
+    return ids
 #######################
 
 #######################
@@ -102,3 +115,23 @@ def insert_route(name: str, grade: str, user: str) -> int:
     print(f"Created new route {name}, got id {created_route_id}")
     # returns route ID for redirection to created route
     return created_route_id
+
+def get_user_route_stats(user_id: str, route_id: int) -> tuple:
+    print(f"Getting {user_id} stats for route {route_id}")
+    resp = cur.execute(f"SELECT attempt_num, is_sent, send_date FROM attempts_sends WHERE route_id='{route_id}' and climber_id='{user_id}';")
+    user_info = resp.fetchall()
+    if not user_info:
+        return None
+    print(f"User {user_id} info for route {route_id}: {user_info[0]}")
+    return user_info[0]
+
+def bulk_add_users_to_routes(route_id: int, uids: list) -> str | None:
+    print(f"Adding all the user's to route {route_id}")
+    cur = con.cursor()
+    for uid in uids:
+        params = (route_id, uid[0])
+        print(f"Bulk params for {uid[0]}")
+        print(params)
+        cur.execute("INSERT INTO attempts_sends (route_id, climber_id) VALUES (?, ?);", params)
+    commit()
+    return True

@@ -19,11 +19,13 @@
     <button type="submit">LOGOUT</button>
     <br>
 
+    {% if routes %}
     <ul id="route_list">
         {% for route in routes %}
             <li><a href="routes/{{ route.route_id }}">{{ route.route_name }} (v{{ route.route_grade }})</a></li>
         {% endfor %}
     </ul>
+    {% endif %}
 
 </body>
 </html>

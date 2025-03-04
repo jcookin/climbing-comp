@@ -5,17 +5,29 @@
 </head>
 <body>
 
-    Name: {{ about.name }}
+    <div class="links">
+        <a href="{{ url_for('home') }}" class="active">All Routes</a>
+        <br>
+        <br>
+    </div>
+
+    <div class="errors">
+        {% if error %}
+        <h2 style="color: red;">Error: {{ error }}</h2>
+        {% endif %}
+    </div>
+
+    Name: {{ route_info.route_name }}
     <br>
-    Grade: {{ about.grade }}
+    Grade: {{ route_info.route_grade }}
     <br>
     <br>
-    Number of attempts: {{ about.attempts }}
+    Number of attempts: {{ user_info.attempts }}
     <br>
     <button type="submit" value="attempt">+1 Attempt</button>
     <br>
     <br>
-    Have I sent it? {{ about.sent }}
+    Have I sent it? {{ user_info.sent }}
     <br>
     <button type="submit" value="send">I sent it!</button>
 

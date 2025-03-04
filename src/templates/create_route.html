@@ -18,6 +18,12 @@
       {% endif %}
     </div>
 
+    <div class="status">
+      {% if error %}
+      <h2 style="color: green;">Created: {{ status }}</h2>
+      {% endif %}
+    </div>
+
     <form action="{{ url_for('create_route') }}" method="post">
       <label for="name">
         <i class="fas fa-user"></i>
