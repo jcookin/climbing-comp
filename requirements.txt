@@ -1,1 +1,3 @@
 gunicorn
+bcrypt
+flask

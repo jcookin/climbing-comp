@@ -3,6 +3,7 @@
 <head>
     <title>That Other Climbing Comp</title>
 </head>
+
 <body>
     <ul id="navigation">
     {% for item in navigation %}
@@ -11,7 +12,13 @@
     </ul>
 
     <h1>That Other Climbing Comp</h1>
-    Welcome: {{ username }}
+    Welcome {{ username }}!
+
+    <ul id="route_list">
+        {% for route in routes %}
+            <li><a href="routes/{{ route.id }}">{{ route.name }} (v{{ route.grade }})</a></li>
+        {% endfor %}
+    </ul>
 
 </body>
 </html>

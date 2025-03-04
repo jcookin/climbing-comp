@@ -5,15 +5,14 @@
 CREATE TABLE IF NOT EXISTS climbers (
 	climber_id INTEGER PRIMARY KEY,
   username TEXT NOT NULL UNIQUE,
-	team_id INTEGER DEFAULT 0,
-  user_pass TEXT NOT NULL,
+	team_id INTEGER DEFAULT -1,
+  password_hash TEXT NOT NULL,
   is_admin INTEGER DEFAULT 0,
   created_date DATETIME DEFAULT (datetime('now')),
   FOREIGN KEY (team_id)
     REFERENCES teams (team_id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-  
 ) WITHOUT ROWID;
 
 -------------------------------------------------------------
@@ -45,11 +44,11 @@ CREATE TABLE IF NOT EXISTS attempts_sends (
   route_id INTEGER,
   climber_id INTEGER,
   attempt_num INTEGER default 0,
-  send_num INTEGER default 0,
-  send_date DATETIME DEFAULT (datetime('now'))
+  is_sent INTEGER default 0,
+  send_date DATETIME DEFAULT (datetime('now')),
   PRIMARY KEY (route_id, climber_id),
-  FOREIGN KEY (route_id) 
-      REFERENCES routes (route_id) 
+  FOREIGN KEY (route_id)
+      REFERENCES routes (route_id)
          ON DELETE CASCADE
          ON UPDATE NO ACTION,
   FOREIGN KEY (climber_id) 
@@ -62,7 +61,8 @@ CREATE TABLE IF NOT EXISTS attempts_sends (
 -- Miscellaneous data needed for app functions
 -----------------------------------------------
 CREATE TABLE IF NOT EXISTS app_data (
-  -- Generate random share code for user creation
-  register_code INTEGER DEFAULT (lower(hex(randomblob(16)))),
-  pass_hash TEXT DEFAULT (randomblob(32)),
-) WITHOUT ROWID;
+  register_code INTEGER NOT NULL,
+  salt TEXT DEFAULT (randomblob(32))
+);
+
+INSERT INTO app_data (register_code) VALUES ('ouchmyfingies');

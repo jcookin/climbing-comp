@@ -15,6 +15,7 @@ pkgs.mkShellNoCC {
       python-pkgs.requests
       python-pkgs.flask
       python-pkgs.gunicorn
+      python-pkgs.bcrypt
     ]))
 
   ];
