@@ -7,16 +7,21 @@
 <body>
     <ul id="navigation">
     {% for item in navigation %}
-        <li><a href="{{ link.href }}">{{ link.caption }}</a></li>
+        <li><a href="{{ item.href }}">{{ item.title }}</a></li>
     {% endfor %}
+        <li><a href="{{ url_for('create_route') }}">Add a New Route</a></li>
     </ul>
 
     <h1>That Other Climbing Comp</h1>
-    Welcome {{ username }}!
+    Hi {{ session['username'] }}!
+
+    <br>
+    <button type="submit">LOGOUT</button>
+    <br>
 
     <ul id="route_list">
         {% for route in routes %}
-            <li><a href="routes/{{ route.id }}">{{ route.name }} (v{{ route.grade }})</a></li>
+            <li><a href="routes/{{ route.route_id }}">{{ route.route_name }} (v{{ route.route_grade }})</a></li>
         {% endfor %}
     </ul>
 

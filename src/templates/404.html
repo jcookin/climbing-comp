@@ -1,0 +1,9 @@
+404 PAGE DOES NOT EXIST
+<br>
+<a href="{{ url_for('home') }}">Go Home</a>
+<br>
+<div class="errors">
+  {% if error %}
+  <h2 style="color: red;">Error: {{ error }}</h2>
+  {% endif %}
+</div>

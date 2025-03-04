@@ -13,6 +13,13 @@
                 <br>
                 <br>
 			</div>
+
+			<div class="errors">
+				{% if error %}
+				<h2 style="color: red;">Error: {{ error }}</h2>
+				{% endif %}
+			</div>
+
 			<form action="{{ url_for('login') }}" method="post">
 				<label for="username">
 					<i class="fas fa-user"></i>

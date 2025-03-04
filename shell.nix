@@ -3,19 +3,18 @@ let
   pkgs = import nixpkgs { config = {}; overlays = []; };
 in
 
-pkgs.mkShellNoCC {
+pkgs.mkShell {
   packages = with pkgs; [
     # General packages
     sqlite
     python312
 
     # Python packages
-    (pkgs.python3.withPackages (python-pkgs: [
-      # python-pkgs.pandas
-      python-pkgs.requests
-      python-pkgs.flask
-      python-pkgs.gunicorn
-      python-pkgs.bcrypt
+    (python312.withPackages (pypkgs: with pypkgs; [
+        yapf
+        flask
+        gunicorn
+        bcrypt
     ]))
 
   ];

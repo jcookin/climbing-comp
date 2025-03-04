@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>That Other Climbing Comp</title>
+</head>
+<body>
+  <div class="Add a new route">
+    <h1>That Other Climbing Comp - Register</h1>
+    <div class="links">
+      <a href="{{ url_for('home') }}" class="active">All Routes</a>
+      <br>
+      <br>
+    </div>
+
+    <div class="errors">
+      {% if error %}
+      <h2 style="color: red;">Error: {{ error }}</h2>
+      {% endif %}
+    </div>
+
+    <form action="{{ url_for('create_route') }}" method="post">
+      <label for="name">
+        <i class="fas fa-user"></i>
+      </label>
+      <input type="text" name="route_name" placeholder="Route Name" id="route_name" required>
+      <label for="grade">
+        <i class="fas fa-lock"></i>
+      </label>
+      <input type="text" name="route_grade" placeholder="Grade (ex: 5)" id="route_grade" required>
+      <div class="msg">{{ msg }}</div>
+      <input type="submit" value="create-route">
+    </form>
+  </div>
+</body>
+</html>

@@ -3,17 +3,17 @@
 -- Team assignment not required at user creation
 -------------------------------------------------
 CREATE TABLE IF NOT EXISTS climbers (
-	climber_id INTEGER PRIMARY KEY,
+	climber_id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT NOT NULL UNIQUE,
 	team_id INTEGER DEFAULT -1,
-  password_hash TEXT NOT NULL,
+  password_hash BLOB NOT NULL,
   is_admin INTEGER DEFAULT 0,
   created_date DATETIME DEFAULT (datetime('now')),
   FOREIGN KEY (team_id)
     REFERENCES teams (team_id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) WITHOUT ROWID;
+);
 
 -------------------------------------------------------------
 -- Route name and difficulty management
@@ -21,20 +21,21 @@ CREATE TABLE IF NOT EXISTS climbers (
 -- Assumed no route names will be duplicated
 -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS routes (
-  route_id INTEGER PRIMARY KEY,
+  route_id INTEGER PRIMARY KEY AUTOINCREMENT,
   route_name TEXT NOT NULL UNIQUE,
   route_grade INTEGER NOT NULL,
-  route_created DATETIME DEFAULT (datetime('now'))
-) WITHOUT ROWID;
+  route_created DATETIME DEFAULT (datetime('now')),
+  route_created_by TEXT DEFAULT NULL
+);
 
 --------------
 -- Team names
 --------------
 CREATE TABLE IF NOT EXISTS teams (
-  team_id INTEGER PRIMARY KEY,
+  team_id INTEGER PRIMARY KEY AUTOINCREMENT,
   team_name TEXT NOT NULL UNIQUE,
   created_date DATETIME DEFAULT (datetime('now'))
-) WITHOUT ROWID;
+);
 
 ---------------------------------------------------
 -- Maintains the relationship of routes to users
@@ -55,14 +56,13 @@ CREATE TABLE IF NOT EXISTS attempts_sends (
       REFERENCES climbers (climber_id) 
          ON DELETE CASCADE
          ON UPDATE NO ACTION
-) WITHOUT ROWID;
+);
 
 -----------------------------------------------
 -- Miscellaneous data needed for app functions
 -----------------------------------------------
 CREATE TABLE IF NOT EXISTS app_data (
-  register_code INTEGER NOT NULL,
-  salt TEXT DEFAULT (randomblob(32))
+  register_code INTEGER NOT NULL
 );
 
 INSERT INTO app_data (register_code) VALUES ('ouchmyfingies');
