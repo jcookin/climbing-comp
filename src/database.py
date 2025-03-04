@@ -31,6 +31,11 @@ def get_salt():
     resp = cur.execute("SELECT salt FROM app_data;")
     return resp.fetchone()[0]
 
+def get_registration_code():
+    cur = con.cursor()
+    resp = cur.execute("SELECT register_code FROM app_data")
+    return resp.fetchone()[0]
+
 def insert_user(username: str, hashed_password: str, is_admin: bool = False):
     resp = cur.execute(f"""
                 INSERT INTO climbers 

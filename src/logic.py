@@ -7,9 +7,12 @@ def init():
 def validate_login(username, password):
     return True
 
-def validate_registration_code():
-    print("validating registration code")
-    return True
+def validate_registration_code(user_code):
+    print(f"user code: {user_code}")
+    print("validating user registration code")
+    registration_code = database.get_registration_code()
+    print(registration_code)
+    return user_code == registration_code
 
 def check_user_exists():
     print("user exists check")

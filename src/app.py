@@ -45,11 +45,11 @@ def register():
     if request.method == 'POST':
         username = str(request.form['username'])
         password = str(request.form['password'])
-        register_code = str(request.form['register_code'])
+        user_code = str(request.form['register_code'])
 
         # Check register code is valid
-        if not logic.validate_registration_code(register_code):
-            return render_template('register', error='Invalid registration code')
+        if not logic.validate_registration_code(user_code):
+            return render_template('register', error='Invalid registration code')   
         # Check if user already exists
         if not logic.check_user_exists(username):
             return render_template('register', error='Username already exists')
