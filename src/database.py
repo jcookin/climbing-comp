@@ -82,7 +82,7 @@ Used only to check route names during route creation
 use 'get_route_by_id' for getting a route's details
 """
 def get_route_by_name(name: str) -> tuple | None:
-    print(f"Getting routes for name: {name}")
+    print(f"Getting routes for route name: {name}")
     resp = cur.execute(f"SELECT route_id, route_name FROM routes WHERE route_name='{name}';")
     routes = resp.fetchone()
     print(f"routes found: {routes}")
@@ -114,6 +114,7 @@ def insert_route(name: str, grade: str, user: str) -> int:
     created_route_id = cur.lastrowid
     print(f"Created new route {name}, got id {created_route_id}")
     # returns route ID for redirection to created route
+    cur.close()
     return created_route_id
 
 def get_user_route_stats(user_id: str, route_id: int) -> tuple:
@@ -134,4 +135,42 @@ def bulk_add_users_to_routes(route_id: int, uids: list) -> str | None:
         print(params)
         cur.execute("INSERT INTO attempts_sends (route_id, climber_id) VALUES (?, ?);", params)
     commit()
+    cur.close()
     return True
+
+def add_user_to_route(route_id: int, uid: str) -> str | None:
+    print(f"Adding user {uid} to all route {route_id}")
+    params = (route_id, uid)
+    cur = con.cursor()
+    cur.execute("UPSERT INTO attempts_sends (route_id, climber_id) VALUES (?,?)", params)
+    commit()
+    cur.close()
+    return
+
+def add_user_to_all_routes(uid: str) -> str | None:
+    print(f"Adding user {uid} to all current routes")
+    routes = get_all_routes()
+    cur = con.cursor()
+    for route in routes:
+        params = (route[0], uid)
+        cur.execute("INSERT INTO attempts_sends (route_id, climber_id) VALUES (?,?) ON CONFLICT (route_id, climber_id) DO NOTHING;", params)
+    commit()
+    cur.close()
+    return
+
+def add_attempt(uid: int, route_id: int, attempts: int=1) -> str | None:
+    print(f"Adding +{attempts} attempts to {uid} for route {route_id}")
+    params = (attempts, uid, route_id)
+    cur = con.cursor()
+    cur.execute("UPDATE attempts_sends SET attempt_num = attempt_num + ? WHERE climber_id = ? and route_id = ?;", params)
+    commit()
+    # cur.close()
+    return None
+
+def mark_sent(uid: int, route_id: int) -> str | None:
+    print(f"Marking route {route_id} as sent for user {uid}")
+    cur = con.cursor()
+    cur.execute(f"UPDATE attempts_sends SET is_sent = 1 WHERE climber_id='{uid}' and route_id='{route_id}'")
+    commit()
+    cur.close()
+    return None

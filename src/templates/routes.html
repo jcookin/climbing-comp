@@ -24,12 +24,22 @@
     <br>
     Number of attempts: {{ user_info.attempts }}
     <br>
-    <button type="submit" value="attempt">+1 Attempt</button>
+    <div>
+        <form action="{{ url_for('routes', route_id=route_info.route_id) }}" method="post">
+            <input type="hidden" name="attempt" value="1" id="attempt">
+            <input type="submit" value="+1 Attempt" id="attempt_button">
+        </form>
+    </div>
     <br>
     <br>
     Have I sent it? {{ user_info.sent }}
     <br>
-    <button type="submit" value="send">I sent it!</button>
+    <div>
+        <form action="{{ url_for('routes', route_id=route_info.route_id) }}" method="post">
+            <input type="hidden" name="sent" value="1" id="sent">
+            <input type="submit" value="I SENT IT!" id="sent_button">
+        </form>
+    </div>
 
 </body>
 </html>

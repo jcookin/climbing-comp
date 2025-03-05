@@ -45,12 +45,23 @@ def get_user():
 def routes(route_id: int):
     error = None
     route_info, error = logic.get_route_by_id(route_id=route_id)
+    user = session['username']
     
+    # Handle form/button actions
+    if request.method == 'POST':
+        if 'attempt' in request.form:
+            print(f"Incrementing attempts on route {route_id} for user {user}")
+            logic.add_route_attempt(user, route_id)
+            # user_info['attempts'] = user_info['attempts'] + 1
+        if 'sent' in request.form:
+            print(f"Marking route as sent for user {user}")
+            logic.mark_route_sent(session['username'], route_id)
+            # user_info['sent'] = 1
+
     # Likely a no route for ID error
     if error:
         return render_template('routes.html', route_info={}, user_info={}, error=error)
     
-    user = session['username']
     user_info, error = logic.get_user_info_for_route_id(username=user, route_id=route_id)
     if error:
         return render_template('routes.html', route_info={}, user_info={}, error=error)
@@ -111,13 +122,14 @@ def register():
             return render_template('register.html', error='Password must be 8+ characters'), 400
         # create user, then redirect to the home page
         print("all registration checks passed")
-        if logic.create_user(username=username, hashed_password=logic.hash_password(password=password)):
+        err = logic.create_user(username=username, hashed_password=logic.hash_password(password=password))
+        if not err:
             print(f"User '{username}' successfully created")
             session['username'] = username
             # session['logged_in'] = True
             return redirect(url_for('home'))
         else:
-            error = 'Unable to create user'
+            error = f'Unable to create user with error: {err}'
             respcode = 500
     return render_template('register.html', error=error), respcode
 

@@ -5,7 +5,7 @@
 </head>
 <body>
   <div class="Add a new route">
-    <h1>That Other Climbing Comp - Register</h1>
+    <h1>That Other Climbing Comp - Add a New Route</h1>
     <div class="links">
       <a href="{{ url_for('home') }}" class="active">All Routes</a>
       <br>
@@ -19,7 +19,7 @@
     </div>
 
     <div class="status">
-      {% if error %}
+      {% if status %}
       <h2 style="color: green;">Created: {{ status }}</h2>
       {% endif %}
     </div>
