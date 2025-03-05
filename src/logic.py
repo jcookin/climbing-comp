@@ -32,8 +32,8 @@ def check_user_exists(username: str):
             return True
     return False
 
-def create_user(username: str, hashed_password: bytes) -> str | None:
-    created_uid = database.insert_user(username, hashed_password)
+def create_user(username: str, hashed_password: bytes, common_name: str = None) -> str | None:
+    created_uid = database.insert_user(username, hashed_password, common_name)
     # Add user to every existing route by default
     err = add_user_to_all_routes(created_uid)
     return err
@@ -54,11 +54,6 @@ def get_routes() -> dict | None:
         list_routes.append(dict(zip(column_names, routes[row])))
     print(f"route list dict: \n{list_routes}\n")
     return list_routes
-    # return [
-    #     {"id": 1, "name": "cool route", "grade": 0},
-    #     {"id": 2, "name": "test ma goats", "grade": 3},
-    #     {"id": 3, "name": "lemon bomb", "grade": 8},
-    # ]
 
 def check_route_exists(route_name: str) -> Tuple[int, str]:
     routes = database.get_route_by_name(route_name)
@@ -69,11 +64,11 @@ def check_route_exists(route_name: str) -> Tuple[int, str]:
             return routelist, None
     return None, None
 
-def add_route(route_name: str, route_grade: int, creating_user: str) -> Tuple[int, str]:
+def add_route(route_name: str, route_grade: int, route_points: int, creating_user: str) -> Tuple[int, str]:
     existing_id = database.get_route_by_name(route_name)
     if existing_id:
         return existing_id, 'Route with name already exists'
-    id = database.insert_route(name=route_name, grade=route_grade, user=creating_user)
+    id = database.insert_route(name=route_name, grade=route_grade, points=route_points, user=creating_user)
     if not id:
         return None, 'Error creating route'
     err = add_route_to_all_users(route_id=id)

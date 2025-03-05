@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS climbers (
 	team_id INTEGER DEFAULT -1,
   password_hash BLOB NOT NULL,
   is_admin INTEGER DEFAULT 0,
+  common_name TEXT DEFAULT NULL,
   created_date DATETIME DEFAULT (datetime('now')),
   FOREIGN KEY (team_id)
     REFERENCES teams (team_id)
@@ -17,7 +18,7 @@ CREATE TABLE IF NOT EXISTS climbers (
 
 -------------------------------------------------------------
 -- Route name and difficulty management
--- Grade values: v0 = 0, -0 = v0-, 0.5 = v0+, if +/- is used
+-- Grade values: v0 = 0, plus/minus not accounted for
 -- Assumed no route names will be duplicated
 -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS routes (
@@ -25,7 +26,8 @@ CREATE TABLE IF NOT EXISTS routes (
   route_name TEXT NOT NULL UNIQUE,
   route_grade INTEGER NOT NULL,
   route_created DATETIME DEFAULT (datetime('now')),
-  route_created_by TEXT DEFAULT NULL
+  route_created_by TEXT DEFAULT NULL,
+  route_points INTEGER NOT NULL
 );
 
 --------------

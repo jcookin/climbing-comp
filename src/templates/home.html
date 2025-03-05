@@ -19,16 +19,18 @@
     </p>
     {% if route.route_grade <= 4 %}
     <p class="tag is-warning">
-        v{{ route.route_grade }}
+        V{{ route.route_grade }}
     </p>
     {% else %}
     <p class="tag is-danger">
-        v{{ route.route_grade }}
+        V{{ route.route_grade }}
     </p>
     {% endif %}
+    {% if route.route_points %}
     <p class="tag is-dark">
-        1000 pts
+        {{ route.route_points }}pts
     </p>
+    {% endif %}
 </a>
 <!-- </div> -->
 {% endfor %}

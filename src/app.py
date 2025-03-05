@@ -1,7 +1,6 @@
 # save this as app.py
 from flask import Flask
 from flask import request, session, redirect, url_for, render_template
-import sys
 
 import logic
 
@@ -9,6 +8,8 @@ app = Flask(__name__)
 
 with app.app_context():
     logic.init()
+
+MAX_SQL_INT = 9223372036854775807
 
 def run():
     app.run(debug=False, use_reloader=False)
@@ -85,19 +86,35 @@ def create_route():
     status = None
     if request.method == 'POST':
         route_name = str(request.form['route_name'])
-        route_grade = int(request.form['route_grade'])
+        route_grade = request.form['route_grade']
+        route_points = request.form['route_points']
         creating_user = session['username']
 
-        existing_id, error = logic.check_route_exists(route_name)
-        # route already exists, provide link
-        if existing_id and error:
-            error = 'Route already exists'
-            id = existing_id
-            status = None
-        
-        id, error = logic.add_route(route_name=route_name, route_grade=route_grade, creating_user=creating_user)
-        if id:
-            status = "OK - Route created"
+        # Check user inputs
+        try:
+            route_grade = int(route_grade)
+            route_points = int(route_points)
+
+            if route_grade < 0 or route_points < 0:
+                error = '"Grade" and "Points" must be positive numbers'
+            if route_grade > 17:
+                error = "Congrats, you tried to add a route harder than 'Burden of Dreams' - that's a V6 in my gym"
+            if route_grade >= MAX_SQL_INT or route_points >= MAX_SQL_INT:
+                error = f'Numbers greater than {MAX_SQL_INT} are not allowed'
+        except Exception as e:
+            print(e)
+            error = '"Grade" and "Points" must be numbers'
+
+        if not error:
+            existing_id, error = logic.check_route_exists(route_name)
+            # route already exists, provide link
+            if existing_id or error:
+                error = 'Route already exists'
+                id = existing_id
+            else:
+                id, error = logic.add_route(route_name=route_name, route_grade=route_grade, route_points=route_points, creating_user=creating_user)
+                if id:
+                    status = "OK - Route created"
     if status:
         return render_template('create_route.html', route_id=id, route_name=request.form['route_name'], status=status)
     return render_template('create_route.html', error=error)
@@ -117,6 +134,7 @@ def register():
         username = str(request.form['username'])
         password = str(request.form['password'])
         user_code = str(request.form['register_code'])
+        common_name = str(request.form['common_name'])
 
         # Check register code is valid
         if not logic.validate_registration_code(user_code):
@@ -130,7 +148,7 @@ def register():
             return render_template('register.html', error='Password must be 8+ characters'), 400
         # create user, then redirect to the home page
         print("all registration checks passed")
-        err = logic.create_user(username=username, hashed_password=logic.hash_password(password=password))
+        err = logic.create_user(username=username, hashed_password=logic.hash_password(password=password), common_name=common_name)
         if not err:
             print(f"User '{username}' successfully created")
             session['username'] = username

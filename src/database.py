@@ -1,8 +1,9 @@
 import sqlite3
 from typing import Tuple
+import os
 
-db_path = "./"
-db_name = "climbing.db"
+db_path = os.getenv("DB_PATH", "./")
+db_name = os.getenv("DB_NAME", "climbing.db")
 
 con = None
 cur = None
@@ -50,10 +51,10 @@ def get_registration_code() -> str:
     resp = cur.execute("SELECT register_code FROM app_data")
     return resp.fetchone()[0]
 
-def insert_user(username: str, hashed_password: bytes, team_id: int = -1, is_admin: bool = False) -> int:
-    params = (username, hashed_password, team_id, is_admin)
+def insert_user(username: str, hashed_password: bytes, common_name: str, team_id: int = -1, is_admin: bool = False) -> int:
+    params = (username, hashed_password, common_name, team_id, is_admin)
     cur = con.cursor()
-    cur.execute("INSERT INTO climbers (username, password_hash, team_id, is_admin) VALUES (?, ?, ?, ?);", params)
+    cur.execute("INSERT INTO climbers (username, password_hash, common_name, team_id, is_admin) VALUES (?, ?, ?, ?, ?);", params)
     commit()
     created_user_id = cur.lastrowid
     print(f"Created user {username}, got id {created_user_id}")
@@ -105,11 +106,11 @@ def get_column_names_from(table_name: str) -> tuple:
     print(f"Got column names: {column_names}")
     return tuple(column_names)
 
-def insert_route(name: str, grade: str, user: str) -> int:
+def insert_route(name: str, grade: int, points: int, user: str) -> int:
     print(f"Creating route: {name}, {grade}, {user}")
-    params = (name, grade, user)
+    params = (name, grade, points, user)
     cur = con.cursor()
-    cur.execute("INSERT INTO routes (route_name, route_grade, route_created_by) VALUES (?, ?, ?);", params)
+    cur.execute("INSERT INTO routes (route_name, route_grade, route_points, route_created_by) VALUES (?, ?, ?, ?);", params)
     commit()
     created_route_id = cur.lastrowid
     print(f"Created new route {name}, got id {created_route_id}")

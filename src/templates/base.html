@@ -27,10 +27,11 @@
         </a>
         
         {% if session['username'] %}
-        <form action="{{ url_for('logout') }}" method="post">
-          <input type="hidden" name="logout_user" value="{{ session['username'] }}" id="logout_user">
-          <input type="submit" class="tag is-white is-medium" value="Log Out">
-        </form>
+        <div class="tag is-white is-medium" style="cursor: pointer;">
+          <form class="tag is-white is-medium" action="{{ url_for('logout') }}" method="post">
+            <input type="submit" class="" value="Log Out" style="all: unset;">
+          </form>
+        </div>
         {% else %}
         <a class="tag is-white is-medium" href="{{ url_for('login') }}">
           Log In
