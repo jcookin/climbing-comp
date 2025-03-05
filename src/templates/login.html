@@ -1,37 +1,46 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Login</title>
-	</head>
-	<body>
-		<div class="login">
-			<h1>That Other Climbing Comp - Login</h1>
-			<div class="links">
-                <br>
-				No Account? <a href="{{ url_for('register') }}">Register Here</a>
-                <br>
-                <br>
-			</div>
+{% extends "base.html" %}
+{% block title %}User Registration{% endblock %}
 
-			<div class="errors">
-				{% if error %}
-				<h2 style="color: red;">Error: {{ error }}</h2>
-				{% endif %}
-			</div>
+{% block head %}
+	{{ super() }}
+{% endblock %}
 
-			<form action="{{ url_for('login') }}" method="post">
-				<label for="username">
+{%  block content %}
+<div class="login">
+	<h1 class="title">Login</h1>
+
+	<h2 class="subtitle">No Account? <a href="{{ url_for('register') }}">Register Instead</a></h2>
+	
+	<div class="errors">
+		{% if error %}
+		<h2 style="color: red;">{{ error }}</h2>
+		{% endif %}
+	</div>
+	
+	<form action="{{ url_for('login') }}" method="post">
+		
+		<div class="field">
+			<label class="label">Username</label>
+			<div class="control has-icons-left has-icons-right">
+				<input class="input is-primary is-large" type="text" placeholder="Username" name="username" id="username" required>
+				<span class="icon is-small is-left">
 					<i class="fas fa-user"></i>
-				</label>
-				<input type="text" name="username" placeholder="Username" id="username" required>
-				<label for="password">
-					<i class="fas fa-lock"></i>
-				</label>
-				<input type="password" name="password" placeholder="Password" id="password" required>
-				<div class="msg">{{ msg }}</div>
-				<input type="submit" value="Login">
-			</form>
+				</span>
+			</div>
 		</div>
-	</body>
-</html>
+		
+		<div class="field">
+			<label class="label">Password</label>
+			<div class="control has-icons-left has-icons-right">
+				<input class="input is-primary is-large" type="password" placeholder="Password" name="password" id="password" required>
+				<span class="icon is-small is-left">
+					<i class="fas fa-lock"></i>
+				</span>
+			</div>
+		</div>
+		
+		<input class="button is-link" value="Login" type="submit">
+	</form>
+</div>
+
+{% endblock %}

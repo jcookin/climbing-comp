@@ -25,17 +25,19 @@ def server_error(error):
 
 @app.route("/")
 def root():
-    if request.cookies.get('username') in session['username']:
-        return redirect(url_for('home'))
-    return redirect(url_for('login'))
+    if not check_user_session():
+        return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 @app.route("/home", methods=['GET', 'POST'])
 def home():
+    if not check_user_session():
+        return redirect(url_for('login'))
     error = None
     routes = logic.get_routes()
     if not routes:
         error = "No routes found"
-    return render_template('home.html', username=session['username'], routes=routes, error=error)
+    return render_template('home.html', routes=routes, error=error)
 
 @app.route("/user", methods=['GET', 'POST'])
 def get_user():
@@ -43,12 +45,16 @@ def get_user():
 
 @app.route("/routes/<route_id>", methods=['GET', 'POST'])
 def routes(route_id: int):
+    if not check_user_session():
+        return redirect(url_for('login'))
     error = None
     route_info, error = logic.get_route_by_id(route_id=route_id)
     user = session['username']
     
     # Handle form/button actions
     if request.method == 'POST':
+        print(request.form)
+        print("FORM ABOVE")
         if 'attempt' in request.form:
             print(f"Incrementing attempts on route {route_id} for user {user}")
             logic.add_route_attempt(user, route_id)
@@ -72,6 +78,8 @@ def routes(route_id: int):
 
 @app.route("/routes/create", methods=['GET', 'POST'])
 def create_route():
+    if not check_user_session():
+        return redirect(url_for('login'))
     error = None
     id = None
     status = None
@@ -96,16 +104,16 @@ def create_route():
 
 @app.route("/logout", methods=['POST'])
 def logout():
-    user = request.form['username']
-    session.pop(request.args[user])
-    return redirect(url_for('index'))
+    print(f"Logging out user: {session['username']}")
+    session.pop('username')
+    return redirect(url_for('login'))
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     error = None
     respcode = None
     if request.method == 'POST':
-        print('POST HERE')
+        print('request.form')
         username = str(request.form['username'])
         password = str(request.form['password'])
         user_code = str(request.form['register_code'])
@@ -146,3 +154,10 @@ def login():
             return redirect(url_for('home'))
     # if request is GET or the credentials were invalid
     return render_template('login.html', error=error)
+
+def check_user_session() -> bool:
+    print("Checking if user has active logged in session")
+    if 'username' not in session.keys():
+        print("no user session found")
+        return False
+    return True

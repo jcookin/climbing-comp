@@ -1,45 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>That Other Climbing Comp</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}User Registration{% endblock %}
 
-    <div class="links">
-        <a href="{{ url_for('home') }}" class="active">All Routes</a>
-        <br>
-        <br>
-    </div>
+{% block head %}
+	{{ super() }}
+{% endblock %}
 
-    <div class="errors">
-        {% if error %}
-        <h2 style="color: red;">Error: {{ error }}</h2>
+{%  block content %}
+
+<div class="errors">
+    {% if error %}
+    <h2 style="color: red;">Error: {{ error }}</h2>
+    {% endif %}
+</div>
+
+<div class="card">
+    <header class="card-header">
+      <h1 class="card-header-title title">{{ route_info.route_name }}</h1>
+    </header>
+    <div class="card-content">
+      <div class="content">
+        {% if route_info.route_grade <= 4 %}
+        <p class="tag is-warning is-light is-large">Grade: V{{ route_info.route_grade }}</p>
+        {% else %}
+        <p class="tag is-danger is-light is-large">Grade: V{{ route_info.route_grade }}</p>
         {% endif %}
+        <p class="tag is-warning is-large">Attempts: {{ user_info.attempts }}</p>
+        {% if user_info.sent == True %}
+        <p class="tag is-success is-large">Already Sent!</p>
+        {% endif %}
+      </div>
     </div>
+    <footer class="card-footer">
+        {% if user_info.sent == False %}
+        <div class="card-footer-item">
+            <form class="card-footer-item" action="{{ url_for('routes', route_id=route_info.route_id) }}" method="post">
+                <input type="hidden" name="attempt" value="1" id="attempt">
+                <input class="card-footer-item button is-link is-large" type="submit" value="Add Attempt">
+            </form>
+        </div>
+        {% endif %}
+        <div class="card-footer-item">
+            <form class="card-footer-item" action="{{ url_for('routes', route_id=route_info.route_id) }}" method="post">
+                <input type="hidden" name="sent" value="1" id="sent">
+                <input class="card-footer-item button is-success is-large" type="submit" value="Sent!">
+            </form>
+        </div>
+      <!-- <a href="#" class="card-footer-item">Add Attempt</a>
+      <a href="#" class="card-footer-item">Sent!</a> -->
+    </footer>
+</div>
 
-    Name: {{ route_info.route_name }}
-    <br>
-    Grade: {{ route_info.route_grade }}
-    <br>
-    <br>
-    Number of attempts: {{ user_info.attempts }}
-    <br>
-    <div>
-        <form action="{{ url_for('routes', route_id=route_info.route_id) }}" method="post">
-            <input type="hidden" name="attempt" value="1" id="attempt">
-            <input type="submit" value="+1 Attempt" id="attempt_button">
-        </form>
-    </div>
-    <br>
-    <br>
-    Have I sent it? {{ user_info.sent }}
-    <br>
-    <div>
-        <form action="{{ url_for('routes', route_id=route_info.route_id) }}" method="post">
-            <input type="hidden" name="sent" value="1" id="sent">
-            <input type="submit" value="I SENT IT!" id="sent_button">
-        </form>
-    </div>
-
-</body>
-</html>
+{% endblock %}

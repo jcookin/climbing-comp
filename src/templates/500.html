@@ -1,9 +1,10 @@
-500 Server error
-<br>
-<a href="{{ url_for('login') }}">Login</a>
-<br>
-<div class="errors">
-  {% if error %}
-  <h2 style="color: red;">Error: {{ error }}</h2>
-  {% endif %}
-</div>
+{% extends "base.html" %}
+{% block title %}User Registration{% endblock %}
+
+{% block head %}
+	{{ super() }}
+{% endblock %}
+
+{%  block content %}
+500 - Server Error
+{% endblock %}

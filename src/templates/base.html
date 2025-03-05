@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>That Other Climbing Comp</title>
+    {% endblock %}
+  </head>
+  <body class="container is-mobile">
+
+    <!-- <a href="{{ url_for('login') }}" class="navbar-item">
+			<span>
+				<i class="fas fa-tape"></i>
+			</span>
+		</a> -->
+    <nav class="container">
+      <div class="">
+        <a class="tag is-info is-medium" href="{{ url_for('home') }}">
+          Home
+        </a>
+  
+        <a class="tag is-primary is-medium" href="{{ url_for('create_route') }}">
+          Add Route
+        </a>
+        
+        {% if session['username'] %}
+        <form action="{{ url_for('logout') }}" method="post">
+          <input type="hidden" name="logout_user" value="{{ session['username'] }}" id="logout_user">
+          <input type="submit" class="tag is-white is-medium" value="Log Out">
+        </form>
+        {% else %}
+        <a class="tag is-white is-medium" href="{{ url_for('login') }}">
+          Log In
+        </a>
+        {% endif%}
+      </div>
+    </nav>
+
+    <div id="content">{% block content %}{% endblock %}</div>
+    
+  </body>
+  <footer class="footer pt-5 pb-5">
+    <div id="footer">
+      {% block footer %}
+      <div class="container">
+        This site is <a href="https://github.com/jcookin/climbing-comp">open source</a>!
+        <a class="tag is-gray is-small" href="https://github.com/jcookin/climbing-comp/issues">
+          Report an issue
+        </a>
+      </div>
+      {% endblock %}
+    </div>
+  </footer>
+</html>

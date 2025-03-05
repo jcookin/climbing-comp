@@ -1,31 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>That Other Climbing Comp</title>
-</head>
+{% extends "base.html" %}
+{% block title %}User Registration{% endblock %}
 
-<body>
-    <ul id="navigation">
-    {% for item in navigation %}
-        <li><a href="{{ item.href }}">{{ item.title }}</a></li>
-    {% endfor %}
-        <li><a href="{{ url_for('create_route') }}">Add a New Route</a></li>
-    </ul>
+{% block head %}
+	{{ super() }}
+{% endblock %}
 
-    <h1>That Other Climbing Comp</h1>
-    Hi {{ session['username'] }}!
+{%  block content %}
 
-    <br>
-    <button type="submit">LOGOUT</button>
-    <br>
-
-    {% if routes %}
-    <ul id="route_list">
-        {% for route in routes %}
-            <li><a href="routes/{{ route.route_id }}">{{ route.route_name }} (v{{ route.route_grade }})</a></li>
-        {% endfor %}
-    </ul>
+<h1 class="title">Hi {{ session['username'] }}!</h1>
+    
+    
+{% if routes %}
+{% for route in routes %}
+<!-- <div class="box"> -->
+<a class="box" href="routes/{{ route.route_id }}">
+    <p class="title is-2">
+        {{ route.route_name }}
+    </p>
+    {% if route.route_grade <= 4 %}
+    <p class="tag is-warning">
+        v{{ route.route_grade }}
+    </p>
+    {% else %}
+    <p class="tag is-danger">
+        v{{ route.route_grade }}
+    </p>
     {% endif %}
+    <p class="tag is-dark">
+        1000 pts
+    </p>
+</a>
+<!-- </div> -->
+{% endfor %}
 
-</body>
-</html>
+<!-- <ul id="route_list">
+    {% for route in routes %}
+    <li><a href="routes/{{ route.route_id }}">{{ route.route_name }} (v{{ route.route_grade }})</a></li>
+    {% endfor %} -->
+</ul>
+{% endif %}
+    
+{% endblock %}

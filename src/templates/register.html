@@ -1,42 +1,64 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Register</title>
-	</head>
-	<body>
-		<div class="login">
-			<h1>That Other Climbing Comp - Register</h1>
-			<div class="links">
-				Already have an account? <a href="{{ url_for('login') }}" class="active">Login</a>
-        <br>
-        <br>
-			</div>
+{% extends "base.html" %}
+{% block title %}User Registration{% endblock %}
 
-			<div class="errors">
-				{% if error %}
-				<h2 style="color: red;">Error: {{ error }}</h2>
-				{% endif %}
-			</div>
+{% block head %}
+	{{ super() }}
+{% endblock %}
 
-			<form action="{{ url_for('register') }}" method="post">
-				<label for="username">
-					<i class="fas fa-user"></i>
-				</label>
-				<input type="text" name="username" placeholder="Username" id="username" required>
-				<label for="password">
-					<i class="fas fa-lock"></i>
-				</label>
-				<input type="password" name="password" placeholder="Password" id="password" required>
-				<div class="msg">{{ msg }}</div>
+{%  block content %}
 
-        <label for="register_code">
-					<i class="fas fa-lock"></i>
-				</label>
-				<input type="text" name="register_code" placeholder="Registration Code" id="register_code" required>
-				<div class="msg">{{ msg }}</div>
-				<input type="submit" value="Register">
-			</form>
+<h1 class="title">Register</h1>
+
+<div class="errors">
+	{% if error %}
+	<h2 style="color: red;">Error: {{ error }}</h2>
+	{% endif %}
+</div>
+
+<form action="{{ url_for('register') }}" method="post">
+	<div class="field">
+		<label class="label">Name</label>
+		<div class="control">
+			<input class="input is-large" type="text" placeholder="(optional) Text input" id="common-name">
 		</div>
-	</body>
-</html>
+	</div>
+	
+	<div class="field">
+		<label class="label">Username</label>
+		<div class="control has-icons-left has-icons-right">
+			<input class="input is-primary is-large" type="text" placeholder="Username" name="username" id="username" required>
+			<span class="icon is-small is-left">
+				<i class="fas fa-user"></i>
+			</span>
+		</div>
+	</div>
+	
+	<div class="field">
+		<label class="label">Password</label>
+		<div class="control has-icons-left has-icons-right">
+			<input class="input is-primary is-large" type="password" placeholder="Password" name="password" id="password" required>
+			<span class="icon is-small is-left">
+				<i class="fas fa-lock"></i>
+			</span>
+		</div>
+	</div>
+
+	<div class="field">
+		<label class="label">Registration Token</label>
+		<div class="control has-icons-left has-icons-right">
+			<input class="input is-primary is-large" type="text" placeholder="Code" name="register_code" id="register_code" required>
+			<span class="icon is-small is-left">
+				<i class="fas fa-key"></i>
+			</span>
+		</div>
+	</div>
+	
+	<div class="field">
+		<div class="control">
+			<a href="https://dn720407.ca.archive.org/0/items/rick-roll/Rick%20Roll.ia.mp4">terms and conditions</a>
+		</div>
+	</div>
+	
+	<input class="button is-link" value="Register" type="submit">
+</form>
+{% endblock %}

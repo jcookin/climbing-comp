@@ -1,41 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>That Other Climbing Comp</title>
-</head>
-<body>
-  <div class="Add a new route">
-    <h1>That Other Climbing Comp - Add a New Route</h1>
-    <div class="links">
-      <a href="{{ url_for('home') }}" class="active">All Routes</a>
-      <br>
-      <br>
-    </div>
+{% extends "base.html" %}
+{% block title %}User Registration{% endblock %}
 
-    <div class="errors">
-      {% if error %}
-      <h2 style="color: red;">Error: {{ error }}</h2>
-      {% endif %}
-    </div>
+{% block head %}
+	{{ super() }}
+{% endblock %}
 
-    <div class="status">
-      {% if status %}
-      <h2 style="color: green;">Created: {{ status }}</h2>
-      {% endif %}
-    </div>
+{%  block content %}
+<h1 class="title">Add a New Route</h1>
 
-    <form action="{{ url_for('create_route') }}" method="post">
-      <label for="name">
-        <i class="fas fa-user"></i>
-      </label>
-      <input type="text" name="route_name" placeholder="Route Name" id="route_name" required>
-      <label for="grade">
-        <i class="fas fa-lock"></i>
-      </label>
-      <input type="text" name="route_grade" placeholder="Grade (ex: 5)" id="route_grade" required>
-      <div class="msg">{{ msg }}</div>
-      <input type="submit" value="create-route">
-    </form>
+<div class="errors">
+  {% if error %}
+  <h2 style="color: red;">Error: {{ error }}</h2>
+  {% endif %}
+</div>
+
+<div class="status">
+  {% if status %}
+  <h2 style="color: green;">Created: {{ status }}</h2>
+  {% endif %}
+</div>
+
+<form action="{{ url_for('create_route') }}" method="post">
+  
+  <div class="field">
+    <label class="label">Route Name</label>
+    <div class="control has-icons-left has-icons-right">
+      <input class="input is-primary is-large" type="text" placeholder="Route Name" name="route_name" id="route_name" required>
+      <span class="icon is-small is-left">
+        <i class="fas fa-signature"></i>
+      </span>
+    </div>
   </div>
-</body>
-</html>
+  
+  <div class="field">
+    <label class="label">Grade (v#)</label>
+    <div class="control has-icons-left has-icons-right">
+      <input class="input is-primary is-large" type="text" placeholder="Grade (ex: 5)" name="route_grade" id="route_grade" required>
+      <span class="icon is-small is-left">
+        <i class="">V</i>
+      </span>
+    </div>
+  </div>
+  
+  <div class="field">
+    <label class="label">Points Value</label>
+    <div class="control has-icons-left has-icons-right">
+      <input class="input is-primary is-large" type="text" placeholder="Points Value (ex: 310)" name="route_points" id="route_points" required>
+      <span class="icon is-small is-left">
+        <i class="fas fa-trophy"></i>
+      </span>
+    </div>
+  </div>
+
+  <input class="button is-link" value="Create Route" type="submit">
+</form>
+
+{% endblock %}

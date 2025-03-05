@@ -111,8 +111,6 @@ def get_user_info_for_route_id(username: str, route_id: int) -> Tuple[dict, str]
     user_id = database.get_user_id_from_name(username=username)
     user_info = database.get_user_route_stats(user_id=user_id, route_id=route_id)
     user_route_dict = {"attempts": user_info[0], "sent": bool(user_info[1]), "send_date": user_info[2]}
-    print("~~~user route dict:")
-    print(user_route_dict)
     return user_route_dict, None
 
 def add_route_attempt(username: str, route_id: int) -> str | None:
