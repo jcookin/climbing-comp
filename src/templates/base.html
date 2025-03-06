@@ -25,6 +25,10 @@
         <a class="tag is-primary is-medium" href="{{ url_for('create_route') }}">
           Add Route
         </a>
+
+        <a class="tag is-primary is-medium is-light" href="{{ url_for('dashboard') }}">
+          Dashboard
+        </a>
         
         {% if session['username'] %}
         <div class="tag is-white is-medium" style="cursor: pointer;">

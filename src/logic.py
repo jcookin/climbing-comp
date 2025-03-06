@@ -1,6 +1,9 @@
 import database
 import bcrypt
 from typing import Tuple
+import os
+
+root_route = os.getenv("ROOT_ROUTE", "http://localhost")
 
 def init():
     database.init_db()

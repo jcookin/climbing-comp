@@ -10,6 +10,7 @@ with app.app_context():
     logic.init()
 
 MAX_SQL_INT = 9223372036854775807
+DASHBOARD_PATH = "/dashboard"
 
 def run():
     app.run(debug=False, use_reloader=False)
@@ -29,6 +30,10 @@ def root():
     if not check_user_session():
         return redirect(url_for('login'))
     return redirect(url_for('home'))
+
+@app.route("/dashboard")
+def dashboard():
+    return redirect(DASHBOARD_PATH)
 
 @app.route("/home", methods=['GET', 'POST'])
 def home():
