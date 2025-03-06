@@ -141,6 +141,10 @@ def register():
         user_code = str(request.form['register_code'])
         common_name = str(request.form['common_name'])
 
+        if "'" in username:
+            error = "Invalid username"
+            return render_template('register.html', error=error), 400
+
         # Check register code is valid
         if not logic.validate_registration_code(user_code):
             return render_template('register.html', error='Invalid registration code'), 400
@@ -166,11 +170,17 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    ok = False
     error = None
     if request.method == 'POST':
         username = str(request.form['username'])
         password = str(request.form['password'])
-        ok, error = logic.validate_login(username, password)
+
+        if "'" in username:
+            error = "Invalid username"
+            ok = False
+        if ok:
+            ok, error = logic.validate_login(username, password)
         if ok:
             session['username'] = username
             # session['logged_in'] = True
