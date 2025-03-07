@@ -22,7 +22,6 @@ def validate_login(username, password):
 
 def validate_registration_code(user_code):
     print("validating user registration code")
-    print(f"user code: {user_code}")
     registration_code = database.get_registration_code()
     good = user_code == registration_code
     print(good)
@@ -31,8 +30,8 @@ def validate_registration_code(user_code):
 def check_user_exists(username: str):
     print(f"Provided username: {username}")
     users = database.get_user_by_name(username=username)
-    print(f"search for existing user matched on: {users}")
     if users:
+        print(f"Found existing user(s): {users}")
         userlist = list(users)
         if username in userlist:
             return True
@@ -51,22 +50,22 @@ def hash_password(password: str) -> bytes:
 
 def get_routes() -> dict | None:
     routes = database.get_all_routes()
-    print(type(routes))
     column_names = database.get_column_names_from("routes")
     if not routes:
         return None
     list_routes = []
     for row in range(0,len(routes)):
         list_routes.append(dict(zip(column_names, routes[row])))
-    print(f"route list dict: \n{list_routes}\n")
+    print(f"route list as dictionary: \n{list_routes}\n")
     return list_routes
 
 def check_route_exists(route_name: str) -> Tuple[int, str]:
+    print(f"Checking for existing route with name {route_name}")
     routes = database.get_route_by_name(route_name)
     if routes:
         routelist = list(routes)
         if route_name in routelist:
-            print(f"found route: {routelist}")
+            print(f"found route: {route_name}")
             return routelist, None
     return None, None
 
@@ -76,17 +75,21 @@ def add_route(route_name: str, route_grade: int, route_points: int, creating_use
         return existing_id, 'Route with name already exists'
     id = database.insert_route(name=route_name, grade=route_grade, points=route_points, user=creating_user)
     if not id:
+        print(f"Error adding route")
         return None, 'Error creating route'
     err = add_route_to_all_users(route_id=id)
     if err:
+        print(f"Error while adding users to new route: {err}")
         return id, err
     return id, None
 
 def add_user_to_all_routes(user_id: int) -> str | None:
+    print("Adding new user to all existing routes")
     err = database.add_user_to_all_routes(user_id)
     return err
 
 def add_route_to_all_users(route_id: int) -> str | None:
+    print("Adding new route to all users")
     users = database.get_all_user_ids()
     # if no users, exit cleanly anyway
     if not users:
@@ -98,17 +101,17 @@ def add_route_to_all_users(route_id: int) -> str | None:
     return None
 
 def get_route_by_id(route_id: int) -> Tuple[dict, str]:
+    print(f"Getting route with id: {id}")
     route_info = database.get_route_by_id(route_id)
     column_names = database.get_column_names_from("routes")
     if not route_info:
         return None, f'No route found with id {route_id}'
     
     route_dict = dict(zip(column_names, route_info))
-    print(f"route_dict: {route_dict}")
-    print(type(route_dict))
     return route_dict, None
 
 def get_user_info_for_route_id(username: str, route_id: int) -> Tuple[dict, str]:
+    print(f"Getting info for user '{username}' on route id '{route_id}'")
     user_id = database.get_user_id_from_name(username=username)
     user_info = database.get_user_route_stats(user_id=user_id, route_id=route_id)
     user_route_dict = {"attempts": user_info[0], "sent": bool(user_info[1]), "send_date": user_info[2]}
@@ -116,7 +119,6 @@ def get_user_info_for_route_id(username: str, route_id: int) -> Tuple[dict, str]
 
 def add_route_attempt(username: str, route_id: int) -> str | None:
     uid = database.get_user_id_from_name(username=username)
-    print(f"got uid: {uid}")
     return database.add_attempt(uid, route_id)
 
 def mark_route_sent(username: str, route_id: int) -> str | None:

@@ -59,8 +59,6 @@ def routes(route_id: int):
     
     # Handle form/button actions
     if request.method == 'POST':
-        print(request.form)
-        print("FORM ABOVE")
         if 'attempt' in request.form:
             print(f"Incrementing attempts on route {route_id} for user {user}")
             logic.add_route_attempt(user, route_id)
@@ -136,7 +134,6 @@ def register():
     error = None
     respcode = None
     if request.method == 'POST':
-        print('request.form')
         username = str(request.form['username'])
         password = str(request.form['password'])
         user_code = str(request.form['register_code'])

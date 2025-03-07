@@ -83,7 +83,7 @@ metadata:
     ## tls certificate issuer configurations
     cert-manager.io/cluster-issuer: "letsencrypt"
     ## route-specific configurations for nginx
-    nginx.ingress.kubernetes.io/limit-rps: "20"
+    nginx.ingress.kubernetes.io/limit-rps: "100"
 spec:
   ingressClassName: nginx
   tls:
@@ -146,7 +146,7 @@ spec:
               type: RuntimeDefault
       containers:
       - name: app
-        image: jcookin/climbing-comp:0.0.3
+        image: jcookin/climbing-comp:0.0.4
         env:
           - name: DB_PATH
             value: "/data/"
