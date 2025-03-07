@@ -95,31 +95,32 @@ def create_route():
         route_points = request.form['route_points']
         creating_user = session['username']
 
-        # Check user inputs
-        try:
-            route_grade = int(route_grade)
-            route_points = int(route_points)
-
-            if route_grade < 0 or route_points < 0:
-                error = '"Grade" and "Points" must be positive numbers'
-            if route_grade > 17:
-                error = "Congrats, you tried to add a route harder than 'Burden of Dreams' - that's a V6 in my gym"
-            if route_grade >= MAX_SQL_INT or route_points >= MAX_SQL_INT:
-                error = f'Numbers greater than {MAX_SQL_INT} are not allowed'
-        except Exception as e:
-            print(e)
-            error = '"Grade" and "Points" must be numbers'
-
         if not error:
-            existing_id, error = logic.check_route_exists(route_name)
-            # route already exists, provide link
-            if existing_id or error:
-                error = 'Route already exists'
-                id = existing_id
-            else:
-                id, error = logic.add_route(route_name=route_name, route_grade=route_grade, route_points=route_points, creating_user=creating_user)
-                if id:
-                    status = "OK - Route created"
+            # Check user inputs
+            try:
+                route_grade = int(route_grade)
+                route_points = int(route_points)
+
+                if route_grade < 0 or route_points < 0:
+                    error = '"Grade" and "Points" must be positive numbers'
+                if route_grade > 17:
+                    error = "Congrats, you tried to add a route harder than 'Burden of Dreams' - that's a V6 in my gym"
+                if route_grade >= MAX_SQL_INT or route_points >= MAX_SQL_INT:
+                    error = f'Numbers greater than {MAX_SQL_INT} are not allowed'
+            except Exception as e:
+                print(e)
+                error = '"Grade" and "Points" must be numbers'
+
+            if not error:
+                existing_id, error = logic.check_route_exists(route_name)
+                # route already exists, provide link
+                if existing_id or error:
+                    error = 'Route already exists'
+                    id = existing_id
+                else:
+                    id, error = logic.add_route(route_name=route_name, route_grade=route_grade, route_points=route_points, creating_user=creating_user)
+                    if id:
+                        status = "OK - Route created"
     if status:
         return render_template('create_route.html', route_id=id, route_name=request.form['route_name'], status=status)
     return render_template('create_route.html', error=error)
@@ -140,10 +141,6 @@ def register():
         password = str(request.form['password'])
         user_code = str(request.form['register_code'])
         common_name = str(request.form['common_name'])
-
-        if "'" in username:
-            error = "Invalid username"
-            return render_template('register.html', error=error), 400
 
         # Check register code is valid
         if not logic.validate_registration_code(user_code):
@@ -170,20 +167,16 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    ok = False
+    ok = True
     error = None
     if request.method == 'POST':
         username = str(request.form['username'])
         password = str(request.form['password'])
 
-        if "'" in username:
-            error = "Invalid username"
-            ok = False
         if ok:
             ok, error = logic.validate_login(username, password)
         if ok:
             session['username'] = username
-            # session['logged_in'] = True
             return redirect(url_for('home'))
     # if request is GET or the credentials were invalid
     return render_template('login.html', error=error)
