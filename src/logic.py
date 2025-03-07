@@ -5,8 +5,11 @@ import os
 
 root_route = os.getenv("ROOT_ROUTE", "http://localhost")
 
+global con
+
 def init():
-    database.init_db()
+    global con
+    con = database.init_db()
 
 def validate_login(username, password):
     if not check_user_exists(username=username):

@@ -5,11 +5,10 @@ import os
 db_path = os.getenv("DB_PATH", "./")
 db_name = os.getenv("DB_NAME", "climbing.db")
 
-con = None
-cur = None
+global con
 
 def init_db():
-    global con, cur
+    global con
     con = sqlite3.connect(f"{db_path}{db_name}", check_same_thread=False)
     cur = con.cursor()
     with open("./db/01.sql", "r") as dbf:
@@ -27,28 +26,36 @@ def commit():
 User management
 """
 def get_user_by_name(username: str) -> tuple:
+    cur = con.cursor()
     resp = cur.execute("SELECT username FROM climbers WHERE username=(?)", ( username, ))
     users = resp.fetchone()
+    cur.close()
     print(users)
     return users
 
 def get_user_id_from_name(username: str) -> int:
+    cur = con.cursor()
     resp = cur.execute("SELECT climber_id FROM climbers WHERE username=(?)", (username, ))
     users = resp.fetchone()
     if not users:
         return None
+    cur.close()
     return users[0]
 
 def get_user_password(username: str) -> bytes:
+    cur = con.cursor()
     print(f'Getting password for user: {username}')
     resp = cur.execute("SELECT password_hash FROM climbers WHERE username=(?)", (username, ))
     hashpass = resp.fetchone()[0]
+    cur.close()
     return hashpass
 
 def get_registration_code() -> str:
     cur = con.cursor()
     resp = cur.execute("SELECT register_code FROM app_data")
-    return resp.fetchone()[0]
+    code = resp.fetchone()[0]
+    cur.close()
+    return code
 
 def insert_user(username: str, password_hash: bytes, common_name: str = None, team_id: int=-1, is_admin: bool=False) -> int:
     cur = con.cursor()
@@ -61,12 +68,15 @@ def insert_user(username: str, password_hash: bytes, common_name: str = None, te
     commit()
     created_user_id = cur.lastrowid
     print("Created user {username}, got id {created_user_id}")
+    cur.close()
     return created_user_id
 
 def get_all_user_ids() -> tuple:
+    cur = con.cursor()
     resp = cur.execute("SELECT climber_id FROM climbers;")
     ids = resp.fetchall()
     print(f"Found all ids: {ids}")
+    cur.close()
     return ids
 #######################
 
@@ -76,9 +86,11 @@ Route details only obtainable by ID
 """
 def get_route_by_id(id: int) -> tuple:
     print("Getting routes for id: {id}")
+    cur = con.cursor()
     resp = cur.execute(f"SELECT * FROM routes WHERE route_id=(?);", (id, ))
     route_id = resp.fetchone()
     print(f"route id: {route_id}")
+    cur.close()
     return route_id
 
 """
@@ -87,19 +99,24 @@ use 'get_route_by_id' for getting a route's details
 """
 def get_route_by_name(name: str) -> tuple | None:
     print("Getting routes for route name: {name}")
+    cur = con.cursor()
     resp = cur.execute("SELECT route_id, route_name FROM routes WHERE route_name=(?);", (name, ))
     routes = resp.fetchone()
     print(f"routes found: {routes}")
+    cur.close()
     return routes
 
 def get_all_routes() -> tuple | None:
     print("Getting all routes in DB")
+    cur = con.cursor()
     resp = cur.execute("SELECT * FROM routes;")
     routes = resp.fetchall()
     print(f"Got routes: {routes}")
+    cur.close()
     return routes
 
 def get_column_names_from(table_name: str) -> tuple:
+    cur = con.cursor()
     resp = cur.execute(f"PRAGMA table_info({table_name})")
     table_desc = resp.fetchall()
     print(table_desc)
@@ -107,6 +124,7 @@ def get_column_names_from(table_name: str) -> tuple:
     for d in table_desc:
         column_names.append(d[1])
     print(f"Got column names: {column_names}")
+    cur.close()
     return tuple(column_names)
 
 def insert_route(name: str, grade: int, points: int, user: str) -> int:
@@ -124,6 +142,7 @@ def insert_route(name: str, grade: int, points: int, user: str) -> int:
 
 def get_user_route_stats(user_id: str, route_id: int) -> tuple:
     print(f"Getting {user_id} stats for route {route_id}")
+    cur = con.cursor()
     resp = cur.execute("SELECT attempt_num, is_sent, send_date \
                        FROM attempts_sends \
                        WHERE route_id=(?) and climber_id=(?);",
@@ -132,6 +151,7 @@ def get_user_route_stats(user_id: str, route_id: int) -> tuple:
     if not user_info:
         return None
     print(f"User {user_id} info for route {route_id}: {user_info[0]}")
+    cur.close()
     return user_info[0]
 
 def bulk_add_users_to_routes(route_id: int, uids: list) -> str | None:
@@ -168,7 +188,7 @@ def add_attempt(uid: int, route_id: int, attempts: int=1) -> str | None:
     cur = con.cursor()
     cur.execute("UPDATE attempts_sends SET attempt_num = attempt_num + (?) WHERE climber_id = (?) and route_id = (?);", (attempts, uid, route_id) )
     commit()
-    # cur.close()
+    cur.close()
     return None
 
 def mark_sent(uid: int, route_id: int) -> str | None:
