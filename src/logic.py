@@ -48,7 +48,7 @@ def hash_password(password: str) -> bytes:
     hashed = bcrypt.hashpw(bpassword, bcrypt.gensalt())
     return hashed
 
-def get_routes() -> dict | None:
+def get_routes() -> list | None:
     routes = database.get_all_routes()
     column_names = database.get_column_names_from("routes")
     if not routes:
@@ -56,7 +56,7 @@ def get_routes() -> dict | None:
     list_routes = []
     for row in range(0,len(routes)):
         list_routes.append(dict(zip(column_names, routes[row])))
-    print(f"route list as dictionary: \n{list_routes}\n")
+    print(f"route list as list of dicts: \n{list_routes}\n")
     return list_routes
 
 def check_route_exists(route_name: str) -> Tuple[int, str]:

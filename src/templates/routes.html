@@ -25,7 +25,7 @@
         <p class="tag is-danger is-light is-large">Grade: V{{ route_info.route_grade }}</p>
         {% endif %}
         <p class="tag is-warning is-large">Attempts: {{ user_info.attempts }}</p>
-        {% if user_info.sent == True %}
+        {% if user_info.sent %}
         <p class="tag is-success is-large">Already Sent!</p>
         {% endif %}
         <p class="tag is-dark is-large">Points: {{ route_info.route_points }}</p>

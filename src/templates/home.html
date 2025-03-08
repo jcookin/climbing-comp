@@ -31,6 +31,9 @@
         {{ route.route_points }}pts
     </p>
     {% endif %}
+    {% if route.is_sent %}
+    <p class="tag is-success">Sent!</p>
+    {% endif %}
 </a>
 <!-- </div> -->
 {% endfor %}

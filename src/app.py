@@ -40,7 +40,14 @@ def home():
     if not check_user_session():
         return redirect(url_for('login'))
     error = None
+    # Get all routes
     routes = logic.get_routes()
+    
+    # Get user details per route
+    # modify route info to include user-specific route info
+    for r in routes:
+        is_sent_for_user = logic.get_user_info_for_route_id(username=session['username'], route_id=r['route_id'])[0]['sent']
+        r['is_sent'] = is_sent_for_user
     if not routes:
         error = "No routes found"
     return render_template('home.html', routes=routes, error=error)
