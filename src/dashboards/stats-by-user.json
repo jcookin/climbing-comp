@@ -1,0 +1,198 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 3,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "uid": "def01vqpt4nb4d"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "queryText": "SELECT COUNT(route_id)\nFROM climbers\nLEFT JOIN attempts_sends ON attempts_sends.climber_id=climbers.climber_id\nWHERE climbers.username='jcook' AND is_sent=True;\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT COUNT(route_id)\nFROM climbers\nLEFT JOIN attempts_sends ON attempts_sends.climber_id=climbers.climber_id\nWHERE climbers.username='$Username' AND is_sent=True;\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Routes Sent",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "uid": "def01vqpt4nb4d"
+      },
+      "description": "Total attempts made across all routes",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 6
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "queryText": "SELECT SUM(attempts_sends.attempt_num)\nFROM climbers\nLEFT JOIN attempts_sends ON attempts_sends.climber_id=climbers.climber_id\nWHERE climbers.username='demouser';\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT SUM(attempts_sends.attempt_num)\nFROM climbers\nLEFT JOIN attempts_sends ON attempts_sends.climber_id=climbers.climber_id\nWHERE climbers.username='$Username';\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Total Attempts",
+      "type": "stat"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": "+",
+        "allowCustomValue": false,
+        "current": {
+          "text": "jcook",
+          "value": "jcook"
+        },
+        "definition": "SELECT username FROM climbers;",
+        "description": "",
+        "includeAll": false,
+        "name": "Username",
+        "options": [],
+        "query": "SELECT username FROM climbers;",
+        "refresh": 1,
+        "regex": "",
+        "sort": 2,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Stats by User",
+  "uid": "fef2fc91x1dkwd",
+  "version": 6,
+  "weekStart": ""
+}

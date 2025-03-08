@@ -1,0 +1,254 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Stats for the competition",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "def01vqpt4nb4d"
+      },
+      "description": "Competitor leaderboard by points",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "queryText": "-- CLIMBERS ROUTE_NAME IS_SENT\n-- SELECT routes.route_name, attempts_sends.is_sent, climbers.username\n-- FROM routes\n-- LEFT JOIN attempts_sends ON attempts_sends.route_id=routes.route_id\n-- LEFT JOIN climbers ON climbers.climber_id=attempts_sends.climber_id\n-- ORDER BY is_sent DESC;\n\nSELECT climbers.username as Username, SUM(routes.route_points) as Points\nFROM routes\nLEFT JOIN attempts_sends ON attempts_sends.route_id=routes.route_id\nLEFT JOIN climbers ON climbers.climber_id=attempts_sends.climber_id WHERE attempts_sends.is_sent=1\nGROUP BY climbers.climber_id\nORDER BY Points DESC;",
+          "queryType": "table",
+          "rawQueryText": "-- CLIMBERS ROUTE_NAME IS_SENT\n-- SELECT routes.route_name, attempts_sends.is_sent, climbers.username\n-- FROM routes\n-- LEFT JOIN attempts_sends ON attempts_sends.route_id=routes.route_id\n-- LEFT JOIN climbers ON climbers.climber_id=attempts_sends.climber_id\n-- ORDER BY is_sent DESC;\n\nSELECT climbers.username as Username, SUM(routes.route_points) as Points\nFROM routes\nLEFT JOIN attempts_sends ON attempts_sends.route_id=routes.route_id\nLEFT JOIN climbers ON climbers.climber_id=attempts_sends.climber_id WHERE attempts_sends.is_sent=1\nGROUP BY climbers.climber_id\nORDER BY Points DESC;",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Leaderboard (points)",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "def01vqpt4nb4d"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 0,
+        "y": 8
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "def01vqpt4nb4d"
+          },
+          "queryText": "SELECT COUNT(route_grade) FROM routes WHERE route_grade<='4';",
+          "queryType": "table",
+          "rawQueryText": "SELECT COUNT(route_grade) FROM routes WHERE route_grade<='4';",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Num Intermediate Routes",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "def01vqpt4nb4d"
+      },
+      "description": "Number of Advanced Routes",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 4,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "queryText": "SELECT COUNT(route_grade) FROM routes WHERE route_grade>='5';",
+          "queryType": "table",
+          "rawQueryText": "SELECT COUNT(route_grade) FROM routes WHERE route_grade>='5';",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Num Advanced Routes",
+      "type": "stat"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Competition Stats",
+  "uid": "bef08uvzz9xc0e",
+  "version": 4,
+  "weekStart": ""
+}
