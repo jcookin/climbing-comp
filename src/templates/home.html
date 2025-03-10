@@ -1,8 +1,13 @@
 {% extends "base.html" %}
-{% block title %}User Registration{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block head %}
 	{{ super() }}
+    {% if is_admin %}
+    <a class="tag is-dark is-medium", href="{{ url_for('admin') }}">
+        Admin
+    </a>
+    {% endif %}
 {% endblock %}
 
 {%  block content %}
@@ -12,13 +17,20 @@
     
 {% if routes %}
 {% for route in routes %}
-<!-- <div class="box"> -->
+{% if route.is_sent %}
+<a class="box has-background-success" href="routes/{{ route.route_id }}">
+    <p class="title is-2 has-text-primary-00">
+{% elif route.has_attempts > 0%}
+<a class="box has-background-warning" href="routes/{{ route.route_id }}">
+    <p class="title is-2 has-text-primary-00">
+{% else %}
 <a class="box" href="routes/{{ route.route_id }}">
     <p class="title is-2">
+{% endif %}
         {{ route.route_name }}
     </p>
     {% if route.route_grade <= 4 %}
-    <p class="tag is-warning">
+    <p class="tag is-warning has-background-warning-70">
         V{{ route.route_grade }}
     </p>
     {% else %}
@@ -31,17 +43,9 @@
         {{ route.route_points }}pts
     </p>
     {% endif %}
-    {% if route.is_sent %}
-    <p class="tag is-success">Sent!</p>
-    {% endif %}
 </a>
-<!-- </div> -->
 {% endfor %}
 
-<!-- <ul id="route_list">
-    {% for route in routes %}
-    <li><a href="routes/{{ route.route_id }}">{{ route.route_name }} (v{{ route.route_grade }})</a></li>
-    {% endfor %} -->
 </ul>
 {% endif %}
     

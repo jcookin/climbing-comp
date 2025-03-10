@@ -11,6 +11,7 @@ def init_db():
     global con
     con = sqlite3.connect(f"{db_path}{db_name}", check_same_thread=False)
     cur = con.cursor()
+    # cur.execute("PRAGMA foreign_keys = ON;")
     with open("./db/01.sql", "r") as dbf:
         sql = dbf.read()
         cur.executescript(sql)
@@ -26,12 +27,28 @@ def commit():
 User management
 """
 def get_user_by_name(username: str) -> tuple:
+    """
+    Used for validating if a user exists by the name for account registration or login checking
+    """
     cur = con.cursor()
     resp = cur.execute("SELECT username FROM climbers WHERE username=(?)", ( username, ))
     users = resp.fetchone()
     cur.close()
-    print(users)
     return users
+
+def get_user_by_id(userid: str) -> dict | None:
+    """
+    Returns a dictionary of the user's information
+    """
+    print(f"Getting user info for user {userid}")
+    cur = con.cursor()
+    resp = cur.execute("SELECT * FROM climbers WHERE climber_id=(?)", ( userid, ))
+    user_info = resp.fetchone()
+    columns = get_column_names_from("climbers")
+    cur.close()
+    if not user_info:
+        return None
+    return dict(zip(columns, user_info))
 
 def get_user_id_from_name(username: str) -> int:
     cur = con.cursor()
@@ -59,15 +76,13 @@ def get_registration_code() -> str:
 
 def insert_user(username: str, password_hash: bytes, common_name: str = None, team_id: int=-1, is_admin: bool=False) -> int:
     cur = con.cursor()
-    print(f"{username}, {password_hash}, {common_name}, {team_id}, {is_admin}")
-    query_str = "INSERT INTO climbers (username, password_hash, common_name, team_id, is_admin) VALUES (?, ?, ?, ?, ?);"
+    print(f"Adding user: {username}, <password omitted>, with name={common_name}, team={team_id}, is_admin={is_admin}")
+    query_str = "INSERT INTO climbers (username, password_hash, common_name, team_id, is_admin) VALUES (?, ?, ?, ?, ?) ON CONFLICT (username) DO NOTHING;"
     vals = (username, password_hash, common_name, team_id, is_admin )
-    print(query_str)
-    print(vals)
     cur.execute(query_str, vals)
     commit()
     created_user_id = cur.lastrowid
-    print("Created user {username}, got id {created_user_id}")
+    print(f"Created user {username}, got id {created_user_id}")
     cur.close()
     return created_user_id
 
@@ -85,7 +100,7 @@ def get_all_user_ids() -> tuple:
 Route details only obtainable by ID
 """
 def get_route_by_id(id: int) -> tuple:
-    print("Getting routes for id: {id}")
+    print(f"Getting routes for id: {id}")
     cur = con.cursor()
     resp = cur.execute(f"SELECT * FROM routes WHERE route_id=(?);", (id, ))
     route_id = resp.fetchone()
@@ -98,7 +113,7 @@ Used only to check route names during route creation
 use 'get_route_by_id' for getting a route's details
 """
 def get_route_by_name(name: str) -> tuple | None:
-    print("Getting routes for route name: {name}")
+    print(f"Getting routes for route name: {name}")
     cur = con.cursor()
     resp = cur.execute("SELECT route_id, route_name FROM routes WHERE route_name=(?);", (name, ))
     routes = resp.fetchone()
@@ -198,3 +213,14 @@ def mark_sent(uid: int, route_id: int) -> str | None:
     commit()
     cur.close()
     return None
+
+
+########### DELETE ACTIONS ###############
+
+def delete_route_with_id(route_id: int) -> bool:
+    print(f"Deleting route with id {route_id}")
+    cur = con.cursor()
+    result = cur.execute("DELETE FROM routes WHERE route_id=(?)", (route_id, ))
+    commit()
+    print(f"Delete request result: {result}")
+    return result

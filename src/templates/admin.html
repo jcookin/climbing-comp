@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Comp Admin{% endblock %}
+
+{% block head %}
+	{{ super() }}
+{% endblock %}
+
+{%  block content %}
+
+<div class="errors">
+    {% if error %}
+    <h2 style="color: red;">Error: {{ error }}</h2>
+    {% endif %}
+</div>
+
+{% for route in routes %}
+<a class="box" href="routes/{{ route.route_id }}">
+  <p class="title is-2">
+      {{ route.route_name }}
+  </p>
+  {% if route.route_grade <= 4 %}
+  <p class="tag is-warning">
+      V{{ route.route_grade }}
+  </p>
+  {% else %}
+  <p class="tag is-danger">
+      V{{ route.route_grade }}
+  </p>
+  {% endif %}
+  {% if route.route_points %}
+  <p class="tag is-dark">
+      {{ route.route_points }}pts
+  </p>
+  {% endif %}
+  <div class="level-right">
+    <!-- <p class="tag is-danger is-small">DELETE</p> -->
+    <form class="level-item" action="{{ url_for('admin') }}", method="post">
+      <input type="hidden" name="delete_route_id" id="delete_route_id" value="{{ route.route_id }}">
+      <input class="tag is-danger button is-link is-medium" type="submit" value="DELETE">
+    </form>
+  </div>
+</a>
+{% endfor %}
+
+{% endblock %}

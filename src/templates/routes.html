@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}User Registration{% endblock %}
+{% block title %}Route Details{% endblock %}
 
 {% block head %}
 	{{ super() }}
@@ -18,16 +18,18 @@
       <h1 class="card-header-title title">{{ route_info.route_name }}</h1>
     </header>
     <div class="card-content">
-      <div class="content">
-        {% if route_info.route_grade <= 4 %}
-        <p class="tag is-warning is-light is-large">Grade: V{{ route_info.route_grade }}</p>
-        {% else %}
-        <p class="tag is-danger is-light is-large">Grade: V{{ route_info.route_grade }}</p>
-        {% endif %}
-        <p class="tag is-warning is-large">Attempts: {{ user_info.attempts }}</p>
         {% if user_info.sent %}
         <p class="tag is-success is-large">Already Sent!</p>
         {% endif %}
+        <br>
+        <br>
+      <div class="content">
+        {% if route_info.route_grade <= 4 %}
+        <p class="tag is-warning is-large">Grade: V{{ route_info.route_grade }}</p>
+        {% else %}
+        <p class="tag is-danger is-large">Grade: V{{ route_info.route_grade }}</p>
+        {% endif %}
+        <p class="tag is-info is-light is-large">Attempts: {{ user_info.attempts }}</p>
         <p class="tag is-dark is-large">Points: {{ route_info.route_points }}</p>
       </div>
     </div>
@@ -39,13 +41,13 @@
                 <input class="card-footer-item button is-link is-large" type="submit" value="Add Attempt">
             </form>
         </div>
-        {% endif %}
         <div class="card-footer-item">
             <form class="card-footer-item" action="{{ url_for('routes', route_id=route_info.route_id) }}" method="post">
                 <input type="hidden" name="sent" value="1" id="sent">
                 <input class="card-footer-item button is-success is-large" type="submit" value="Sent!">
             </form>
         </div>
+        {% endif %}
     </footer>
 </div>
 

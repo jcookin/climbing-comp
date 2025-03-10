@@ -4,12 +4,16 @@ from typing import Tuple
 import os
 
 root_route = os.getenv("ROOT_ROUTE", "http://localhost")
+default_admin = os.getenv("ADMIN_USER", "admin")
+default_admin_password = os.getenv("ADMIN_PASSWORD", "admin")
 
 global con
 
 def init():
     global con
     con = database.init_db()
+    # if not 
+    database.insert_user(username=default_admin, password_hash=hash_password(default_admin_password), common_name="Admin", is_admin=True, team_id=-1)
 
 def validate_login(username, password):
     if not check_user_exists(username=username):
@@ -48,11 +52,20 @@ def hash_password(password: str) -> bytes:
     hashed = bcrypt.hashpw(bpassword, bcrypt.gensalt())
     return hashed
 
-def get_routes() -> list | None:
+def get_user_id(username: str):
+    return database.get_user_id_from_name(username=username)
+
+def check_user_id_is_admin(userid: int):
+    user_info = database.get_user_by_id(userid)
+    if not user_info:
+        return False
+    return user_info['is_admin']
+
+def get_routes() -> list:
     routes = database.get_all_routes()
     column_names = database.get_column_names_from("routes")
     if not routes:
-        return None
+        return []
     list_routes = []
     for row in range(0,len(routes)):
         list_routes.append(dict(zip(column_names, routes[row])))
@@ -101,7 +114,7 @@ def add_route_to_all_users(route_id: int) -> str | None:
     return None
 
 def get_route_by_id(route_id: int) -> Tuple[dict, str]:
-    print(f"Getting route with id: {id}")
+    print(f"Getting route with id: {route_id}")
     route_info = database.get_route_by_id(route_id)
     column_names = database.get_column_names_from("routes")
     if not route_info:
@@ -124,3 +137,9 @@ def add_route_attempt(username: str, route_id: int) -> str | None:
 def mark_route_sent(username: str, route_id: int) -> str | None:
     uid = database.get_user_id_from_name(username=username)
     return database.mark_sent(uid, route_id)
+
+
+############ DELETE ACTIONS ###################
+def delete_route_by_id(route_id: int) -> bool:
+    status = database.delete_route_with_id(route_id=route_id)
+    return status

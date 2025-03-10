@@ -39,6 +39,9 @@ def dashboard():
 def home():
     if not check_user_session():
         return redirect(url_for('login'))
+    
+    is_admin = logic.check_user_id_is_admin(logic.get_user_id(session['username']))
+
     error = None
     # Get all routes
     routes = logic.get_routes()
@@ -46,11 +49,12 @@ def home():
     # Get user details per route
     # modify route info to include user-specific route info
     for r in routes:
-        is_sent_for_user = logic.get_user_info_for_route_id(username=session['username'], route_id=r['route_id'])[0]['sent']
-        r['is_sent'] = is_sent_for_user
+        user_route_info = logic.get_user_info_for_route_id(username=session['username'], route_id=r['route_id'])
+        r['is_sent'] = user_route_info[0]['sent']
+        r['has_attempts'] = user_route_info[0]['attempts'] > 0
     if not routes:
         error = "No routes found"
-    return render_template('home.html', routes=routes, error=error)
+    return render_template('home.html', routes=routes, error=error, is_admin=is_admin)
 
 @app.route("/user", methods=['GET', 'POST'])
 def get_user():
@@ -91,6 +95,7 @@ def routes(route_id: int):
 def create_route():
     if not check_user_session():
         return redirect(url_for('login'))
+
     error = None
     id = None
     status = None
@@ -191,3 +196,30 @@ def check_user_session() -> bool:
         print("no user session found")
         return False
     return True
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if not check_user_session():
+        return redirect(url_for('login'))
+
+    error = None
+    if not logic.check_user_id_is_admin(logic.get_user_id(session['username'])):
+        return redirect(url_for('home'))
+    
+
+    if request.method == 'POST':
+        route_id = request.form['delete_route_id']
+        route, error = logic.get_route_by_id(route_id=route_id)
+        if not error and route:
+            status = logic.delete_route_by_id(route_id=route_id)
+            if not status:
+                error = f"Error: Unable to delete route with id: {route_id}"
+    
+    routes = logic.get_routes()
+    
+    # for r in routes:
+    #     r['is_deleted'] = False
+    if not routes:
+        error = "No routes found for current comp"
+    
+    return render_template('admin.html', error=error, routes=routes)

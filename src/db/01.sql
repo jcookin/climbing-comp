@@ -1,3 +1,6 @@
+-- Enable foreign keys for database on every session
+PRAGMA foreign_keys = ON;
+
 -------------------------------------------------
 -- Users requiring unique names
 -- Team assignment not required at user creation
@@ -67,4 +70,7 @@ CREATE TABLE IF NOT EXISTS app_data (
   register_code INTEGER NOT NULL
 );
 
+-- Add default registration code
 INSERT INTO app_data (register_code) VALUES ('ouchmyfingies');
+-- Add a default "null" team name for user defaults foreign key needs
+INSERT INTO teams (team_id, team_name) VALUES (-1, "") ON CONFLICT DO NOTHING;

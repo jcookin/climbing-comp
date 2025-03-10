@@ -14,7 +14,9 @@ docker build -t jcookin/climbing-comp:latest -t jcookin/climbing-comp:<version>
 
 ## Running
 
-Image is available on [docker hub](https://hub.docker.com/r/jcookin/climbing-comp)
+Image is available on [docker hub](https://hub.docker.com/r/jcookin/climbing-comp).
+
+Recommended deployment is `kubernetes` or `docker compose` with a shared filesystem mount for the sqlite3 database.
 
 ## Deploying
 
@@ -24,3 +26,7 @@ Docker deployment is trivial, so long as the Grafana dashboard is not in use, in
 
 Grafana dashboard is available as a subpath to the root domain in the kubernetes manifest.
 It can be accessed at `/dashboard`.
+
+Setup the sqlite datasource before importing dashboards. Set this datasource as the default.
+
+Refer to [grafana deployment manifest](./deploy/k8s.yml) `volumeMounts` section for where the sqlite database is mounted.
