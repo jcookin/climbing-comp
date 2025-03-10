@@ -114,6 +114,8 @@ kind: Deployment
 metadata:
   name: climbing-comp-app
   namespace: climbing-comp
+  labels:
+    app: climbing-comp
 spec:
   selector:
     matchLabels:
@@ -146,12 +148,19 @@ spec:
               type: RuntimeDefault
       containers:
       - name: app
-        image: jcookin/climbing-comp:0.0.4
+        image: jcookin/climbing-comp:0.0.5
         env:
           - name: DB_PATH
             value: "/data/"
           - name: DB_NAME
             value: "climbing.db"
+          - name: ADMIN_USER
+            value: "comp-admin"
+          - name: ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: climbing-comp-admin-secret
+                key: password
         resources:
           requests:
             memory: "128Mi"

@@ -20,7 +20,8 @@ Recommended deployment is `kubernetes` or `docker compose` with a shared filesys
 
 ## Deploying
 
-Deploy to kubernetes with the 'deploy/k8s.yml' configuration.
+Change the admin password (as bas64 ecnoded) in `deploy/secrets.yml` then apply the secret config.
+After applying the secret, deploy to kubernetes with the `deploy/k8s.yml` configuration.
 
 Docker deployment is trivial, so long as the Grafana dashboard is not in use, in which case additional configurations are required.
 

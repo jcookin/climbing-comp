@@ -7,13 +7,16 @@ metadata:
     name: debug
 spec:
   securityContext:
-    fsGroup: 1000
-    runAsUser: 1000
-    runAsGroup: 1000
+    # fsGroup: 1000
+    # runAsUser: 1000
+    # runAsGroup: 1000
+    fsGroup: 0
+    runAsUser: 0
+    runAsGroup: 0
   containers:
   - name: debug
     image: alpine:latest
-    command: [ 'sh', '-c', 'sleep 24h' ]
+    command: [ 'sh', '-c', 'apk update && apk add sqlite; sleep 24h' ]
     resources:
       requests:
         memory: "32Mi"
@@ -25,10 +28,10 @@ spec:
       - name: data
         mountPath: /data
     securityContext:
-      allowPrivilegeEscalation: false
+      allowPrivilegeEscalation: true
       capabilities:
           drop: [ "ALL" ]
-      runAsNonRoot: true
+      runAsNonRoot: false
       seccompProfile:
         type: RuntimeDefault
   volumes:

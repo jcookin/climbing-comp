@@ -192,7 +192,6 @@ def add_user_to_all_routes(uid: str) -> str | None:
     routes = get_all_routes()
     cur = con.cursor()
     for route in routes:
-        params = (route[0], uid)
         cur.execute("INSERT INTO attempts_sends (route_id, climber_id) VALUES (?, ?) ON CONFLICT (route_id, climber_id) DO NOTHING;", (route[0], uid) )
     commit()
     cur.close()

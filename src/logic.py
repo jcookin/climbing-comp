@@ -14,6 +14,9 @@ def init():
     con = database.init_db()
     # if not 
     database.insert_user(username=default_admin, password_hash=hash_password(default_admin_password), common_name="Admin", is_admin=True, team_id=-1)
+    admin_id = get_user_id(default_admin)
+    err = add_user_to_all_routes(admin_id)
+    print(err)
 
 def validate_login(username, password):
     if not check_user_exists(username=username):
