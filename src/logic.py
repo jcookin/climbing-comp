@@ -141,6 +141,18 @@ def mark_route_sent(username: str, route_id: int) -> str | None:
     uid = database.get_user_id_from_name(username=username)
     return database.mark_sent(uid, route_id)
 
+def sort_routes_by_date(routes: list) -> list:
+    """
+    Args: list of dicts, representing routes
+    Returns: list of dicts, inverse sorted by date (newest first)
+    """
+    for r in routes:
+        print(r)
+        # print(r.route_created)
+    sorted_routes = sorted(routes, key=lambda r: r['route_created'], reverse=True)
+    print(sorted_routes)
+    return sorted_routes
+
 
 ############ DELETE ACTIONS ###################
 def delete_route_by_id(route_id: int) -> bool:

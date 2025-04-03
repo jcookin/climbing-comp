@@ -29,6 +29,12 @@
 {% endif %}
         {{ route.route_name }}
     </p>
+    {% if route.route_created %}
+    <time datetime="{{ route.route_created }}">
+        {{ route.route_created }}
+    </time>
+    <br>
+    {% endif %}
     {% if route.route_grade <= 4 %}
     <p class="tag is-warning has-background-warning-70">
         V{{ route.route_grade }}

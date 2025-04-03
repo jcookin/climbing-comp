@@ -45,6 +45,9 @@ def home():
     error = None
     # Get all routes
     routes = logic.get_routes()
+
+    # Sort routes by most recent first
+    routes = logic.sort_routes_by_date(routes)
     
     # Get user details per route
     # modify route info to include user-specific route info
